@@ -11,20 +11,20 @@ const Index = () => {
       <section className="bg-gradient-to-b from-blue-50 to-white py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="gradient-text">API Mirror Gateway</span>
+            <span className="gradient-text">API Зеркало</span>
           </h1>
           <p className="text-xl md:text-2xl text-slate-700 mb-8 max-w-3xl mx-auto">
-            A powerful proxy service that mirrors external API requests through your domain
+            Мощный прокси-сервис для зеркалирования запросов внешних API через ваш домен
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" className="rounded-full">
               <Link to="/documentation">
-                Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                Начать <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full">
               <Link to="/api-tester">
-                Test API <ExternalLink className="ml-2 h-4 w-4" />
+                Тестировать API <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -34,16 +34,16 @@ const Index = () => {
       {/* Features section */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Как это работает</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md border">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <Code2 className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Simple Integration</h3>
+              <h3 className="text-xl font-semibold mb-2">Простая интеграция</h3>
               <p className="text-slate-600">
-                Just replace the original API domain with ours and keep all other parameters intact.
+                Просто замените оригинальный домен API нашим и сохраните все остальные параметры без изменений.
               </p>
             </div>
             
@@ -51,9 +51,9 @@ const Index = () => {
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <Repeat className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Transparent Proxy</h3>
+              <h3 className="text-xl font-semibold mb-2">Прозрачный прокси</h3>
               <p className="text-slate-600">
-                We forward your request to the original API and return the response exactly as received.
+                Мы перенаправляем ваш запрос на оригинальный API и возвращаем ответ в точности как получено.
               </p>
             </div>
             
@@ -61,9 +61,9 @@ const Index = () => {
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <ExternalLink className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Multiple Endpoints</h3>
+              <h3 className="text-xl font-semibold mb-2">Множество конечных точек</h3>
               <p className="text-slate-600">
-                Support for all API endpoints with compatible parameter passing.
+                Поддержка всех конечных точек API с совместимой передачей параметров.
               </p>
             </div>
           </div>
@@ -73,11 +73,11 @@ const Index = () => {
       {/* Example usage section */}
       <section className="py-16 md:py-20 bg-slate-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Example Usage</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Пример использования</h2>
           
           <div className="max-w-3xl mx-auto">
             <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-              <h3 className="text-lg font-semibold mb-3">Original API Request:</h3>
+              <h3 className="text-lg font-semibold mb-3">Оригинальный запрос API:</h3>
               <div className="code-block">
                 <code>https://api.bhcesh.me/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=100&genre=drama</code>
               </div>
@@ -88,7 +88,7 @@ const Index = () => {
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md border">
-              <h3 className="text-lg font-semibold mb-3">Your API Mirror Request:</h3>
+              <h3 className="text-lg font-semibold mb-3">Ваш запрос через API Зеркало:</h3>
               <div className="code-block">
                 <code>https://yourdomain.com/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=100&genre=drama</code>
               </div>
@@ -98,7 +98,7 @@ const Index = () => {
           <div className="text-center mt-12">
             <Button asChild>
               <Link to="/documentation">
-                View Full Documentation
+                Посмотреть полную документацию
               </Link>
             </Button>
           </div>

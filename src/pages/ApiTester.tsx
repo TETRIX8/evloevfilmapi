@@ -31,15 +31,15 @@ const ApiTester = () => {
       setResponse(JSON.stringify(data, null, 2));
       
       toast({
-        title: "Request successful",
-        description: "API request completed successfully.",
+        title: "Запрос успешен",
+        description: "Запрос API успешно выполнен.",
       });
     } catch (err: any) {
-      setError(err.message || 'An error occurred while making the request.');
+      setError(err.message || 'Произошла ошибка при выполнении запроса.');
       toast({
         variant: "destructive",
-        title: "Request failed",
-        description: err.message || 'An error occurred while making the request.',
+        title: "Запрос не выполнен",
+        description: err.message || 'Произошла ошибка при выполнении запроса.',
       });
     } finally {
       setLoading(false);
@@ -49,52 +49,52 @@ const ApiTester = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "Copied to clipboard",
-      description: "Text has been copied to clipboard.",
+      title: "Скопировано в буфер обмена",
+      description: "Текст был скопирован в буфер обмена.",
     });
   };
 
   return (
     <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">API Request Tester</h1>
+      <h1 className="text-3xl font-bold mb-6">Тестер запросов API</h1>
       
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Request builder */}
         <div className="space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Request Builder</h2>
+            <h2 className="text-xl font-semibold mb-4">Конструктор запросов</h2>
             
             <div className="space-y-4">
               <div>
-                <Label htmlFor="endpoint">Endpoint</Label>
+                <Label htmlFor="endpoint">Конечная точка</Label>
                 <Input
                   id="endpoint"
                   value={endpoint}
                   onChange={(e) => setEndpoint(e.target.value)}
-                  placeholder="e.g. list, search, etc."
+                  placeholder="например, list, search и т.д."
                 />
               </div>
               
               <div>
-                <Label htmlFor="token">Token</Label>
+                <Label htmlFor="token">Токен</Label>
                 <Input
                   id="token"
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
-                  placeholder="Your API token"
+                  placeholder="Ваш токен API"
                 />
               </div>
               
               <div>
-                <Label htmlFor="params">Additional Parameters</Label>
+                <Label htmlFor="params">Дополнительные параметры</Label>
                 <Input
                   id="params"
                   value={params}
                   onChange={(e) => setParams(e.target.value)}
-                  placeholder="e.g. type=serials&limit=100&genre=drama"
+                  placeholder="например, type=serials&limit=100&genre=drama"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Format: param1=value1&param2=value2
+                  Формат: param1=value1&param2=value2
                 </p>
               </div>
             </div>
@@ -102,9 +102,9 @@ const ApiTester = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Full Request URL</CardTitle>
+              <CardTitle>Полный URL запроса</CardTitle>
               <CardDescription>
-                This is the complete URL that will be used for your API request
+                Это полный URL, который будет использоваться для вашего запроса API
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -118,7 +118,7 @@ const ApiTester = () => {
                 onClick={() => copyToClipboard(fullUrl)}
                 className="flex items-center gap-2"
               >
-                <Copy className="h-4 w-4" /> Copy URL
+                <Copy className="h-4 w-4" /> Копировать URL
               </Button>
               <Button 
                 onClick={handleTest}
@@ -126,10 +126,10 @@ const ApiTester = () => {
                 className="flex items-center gap-2"
               >
                 {loading ? (
-                  <>Processing...</>
+                  <>Обработка...</>
                 ) : (
                   <>
-                    <PlayCircle className="h-4 w-4" /> Test API
+                    <PlayCircle className="h-4 w-4" /> Тестировать API
                   </>
                 )}
               </Button>
@@ -137,7 +137,7 @@ const ApiTester = () => {
           </Card>
           
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Common API Use Cases</h2>
+            <h2 className="text-xl font-semibold mb-4">Распространенные примеры использования API</h2>
             <div className="space-y-3">
               <Button 
                 variant="outline" 
@@ -148,7 +148,7 @@ const ApiTester = () => {
                 }}
               >
                 <CheckCircle className="h-4 w-4 mr-2" /> 
-                Get Drama Series List
+                Получить список драматических сериалов
               </Button>
               
               <Button 
@@ -160,7 +160,7 @@ const ApiTester = () => {
                 }}
               >
                 <CheckCircle className="h-4 w-4 mr-2" /> 
-                Get Action Movies List
+                Получить список экшн-фильмов
               </Button>
               
               <Button 
@@ -172,7 +172,7 @@ const ApiTester = () => {
                 }}
               >
                 <CheckCircle className="h-4 w-4 mr-2" /> 
-                Search for "Avengers"
+                Поиск по запросу "Мстители"
               </Button>
             </div>
           </div>
@@ -182,35 +182,35 @@ const ApiTester = () => {
         <div>
           <div className="bg-white p-6 rounded-lg shadow-sm border mb-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Response</h2>
+              <h2 className="text-xl font-semibold">Ответ</h2>
               {response && (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => copyToClipboard(response)}
                 >
-                  <Copy className="h-4 w-4 mr-1" /> Copy
+                  <Copy className="h-4 w-4 mr-1" /> Копировать
                 </Button>
               )}
             </div>
             
             <Tabs defaultValue="pretty" className="w-full">
               <TabsList className="mb-2">
-                <TabsTrigger value="pretty">Pretty</TabsTrigger>
-                <TabsTrigger value="raw">Raw</TabsTrigger>
+                <TabsTrigger value="pretty">Форматированный</TabsTrigger>
+                <TabsTrigger value="raw">Сырой</TabsTrigger>
               </TabsList>
               
               <TabsContent value="pretty">
                 {error ? (
                   <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-800">
-                    <p className="font-semibold">Error</p>
+                    <p className="font-semibold">Ошибка</p>
                     <p>{error}</p>
                   </div>
                 ) : loading ? (
                   <div className="h-96 flex items-center justify-center bg-slate-50 rounded-md">
                     <div className="flex flex-col items-center">
                       <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
-                      <p>Loading response...</p>
+                      <p>Загрузка ответа...</p>
                     </div>
                   </div>
                 ) : response ? (
@@ -220,7 +220,7 @@ const ApiTester = () => {
                 ) : (
                   <div className="h-96 flex items-center justify-center bg-slate-50 rounded-md">
                     <div className="text-center">
-                      <p className="mb-2">Click "Test API" to see the response</p>
+                      <p className="mb-2">Нажмите "Тестировать API", чтобы увидеть ответ</p>
                       <PlayCircle className="mx-auto h-12 w-12 text-slate-400" />
                     </div>
                   </div>
@@ -242,7 +242,7 @@ const ApiTester = () => {
                   </div>
                 ) : (
                   <div className="h-96 flex items-center justify-center bg-slate-50 rounded-md">
-                    <p className="text-slate-500">No response yet</p>
+                    <p className="text-slate-500">Пока нет ответа</p>
                   </div>
                 )}
               </TabsContent>
@@ -252,17 +252,17 @@ const ApiTester = () => {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="font-semibold text-blue-800 mb-2 flex items-center">
               <ExternalLink className="h-4 w-4 mr-2" />
-              Use in your application
+              Использование в вашем приложении
             </h3>
             <p className="text-blue-800 mb-3">
-              After testing your API request, you can use it in your application with the following code:
+              После тестирования вашего запроса API вы можете использовать его в своем приложении с помощью следующего кода:
             </p>
             <div className="code-block mb-2">
               <code>{`
 fetch("${fullUrl}")
   .then(response => response.json())
   .then(data => console.log(data))
-  .catch(error => console.error("Error:", error));
+  .catch(error => console.error("Ошибка:", error));
               `}</code>
             </div>
             <Button
@@ -273,10 +273,10 @@ fetch("${fullUrl}")
 fetch("${fullUrl}")
   .then(response => response.json())
   .then(data => console.log(data))
-  .catch(error => console.error("Error:", error));
+  .catch(error => console.error("Ошибка:", error));
               `)}
             >
-              <Copy className="h-4 w-4 mr-1" /> Copy Code
+              <Copy className="h-4 w-4 mr-1" /> Копировать код
             </Button>
           </div>
         </div>

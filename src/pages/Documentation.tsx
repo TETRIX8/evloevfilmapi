@@ -11,8 +11,8 @@ const Documentation = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "Copied to clipboard",
-      description: "API endpoint URL has been copied to clipboard.",
+      title: "Скопировано в буфер обмена",
+      description: "URL конечной точки API скопирован в буфер обмена.",
     });
   };
 
@@ -22,31 +22,31 @@ const Documentation = () => {
 
   return (
     <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">API Mirror Gateway Documentation</h1>
+      <h1 className="text-3xl font-bold mb-6">Документация API Зеркала</h1>
       
       <div className="space-y-12">
         {/* Introduction */}
         <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Introduction</h2>
+          <h2 className="text-xl font-bold mb-4">Введение</h2>
           <p className="mb-4">
-            The API Mirror Gateway is a proxy service that allows you to make requests to external APIs through our domain.
-            This can be useful for:
+            API Зеркало - это прокси-сервис, который позволяет отправлять запросы к внешним API через наш домен.
+            Это может быть полезно для:
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-2">
-            <li>Bypassing CORS restrictions in frontend applications</li>
-            <li>Masking the original API endpoint for added privacy</li>
-            <li>Setting up a consistent API endpoint for your applications</li>
+            <li>Обхода ограничений CORS в клиентских приложениях</li>
+            <li>Маскировки исходной конечной точки API для дополнительной приватности</li>
+            <li>Настройки стабильной конечной точки API для ваших приложений</li>
           </ul>
           <p>
-            The gateway forwards all requests to the original API and returns the responses unchanged.
+            Шлюз перенаправляет все запросы к оригинальному API и возвращает ответы без изменений.
           </p>
         </section>
         
         {/* Base URL */}
         <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Base URL</h2>
+          <h2 className="text-xl font-bold mb-4">Базовый URL</h2>
           <p className="mb-4">
-            All API requests should be made to the following base URL:
+            Все запросы API должны быть отправлены на следующий базовый URL:
           </p>
           <div className="flex items-center gap-2 mb-4">
             <code className="api-endpoint flex-1">
@@ -61,23 +61,23 @@ const Documentation = () => {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            This will proxy requests to: <code className="px-1 py-0.5 bg-gray-100 rounded">{baseApiUrl}</code>
+            Это будет проксировать запросы на: <code className="px-1 py-0.5 bg-gray-100 rounded">{baseApiUrl}</code>
           </p>
         </section>
         
         {/* How to Use */}
         <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">How to Use</h2>
+          <h2 className="text-xl font-bold mb-4">Как использовать</h2>
           <p className="mb-4">
-            To use the API Mirror Gateway, replace the original API domain with our gateway's URL and keep all other parameters the same.
+            Для использования API Зеркала замените оригинальный домен API на URL нашего шлюза, сохраняя все остальные параметры без изменений.
           </p>
           
-          <h3 className="text-lg font-semibold mt-6 mb-3">Example:</h3>
+          <h3 className="text-lg font-semibold mt-6 mb-3">Пример:</h3>
           
           <Tabs defaultValue="original">
             <TabsList className="mb-4">
-              <TabsTrigger value="original">Original API</TabsTrigger>
-              <TabsTrigger value="mirror">Mirror Gateway</TabsTrigger>
+              <TabsTrigger value="original">Оригинальный API</TabsTrigger>
+              <TabsTrigger value="mirror">API Зеркало</TabsTrigger>
             </TabsList>
             <TabsContent value="original">
               <div className="code-block">
@@ -96,7 +96,7 @@ const Documentation = () => {
                     onClick={() => copyToClipboard(exampleUrl)}
                     className="flex items-center gap-1"
                   >
-                    <Copy className="h-3 w-3" /> Copy URL
+                    <Copy className="h-3 w-3" /> Копировать URL
                   </Button>
                 </div>
               </div>
@@ -106,36 +106,36 @@ const Documentation = () => {
         
         {/* Available Endpoints */}
         <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Available Endpoints</h2>
+          <h2 className="text-xl font-bold mb-4">Доступные конечные точки</h2>
           <p className="mb-6">
-            The API Mirror Gateway supports all endpoints available in the original API. Here are some common examples:
+            API Зеркало поддерживает все конечные точки, доступные в оригинальном API. Вот некоторые распространенные примеры:
           </p>
           
           <div className="space-y-4">
             <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">List Endpoint</h3>
+              <h3 className="font-semibold mb-2">Конечная точка списка</h3>
               <code className="api-endpoint block mb-2">
                 {baseUrl}/api/list?token=TOKEN&type=TYPE&limit=LIMIT&genre=GENRE
               </code>
               <p className="text-sm text-slate-600">
-                Returns a list of items based on the specified type, limit, and genre.
+                Возвращает список элементов в соответствии с указанным типом, лимитом и жанром.
               </p>
             </div>
             
             <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Search Endpoint</h3>
+              <h3 className="font-semibold mb-2">Конечная точка поиска</h3>
               <code className="api-endpoint block mb-2">
                 {baseUrl}/api/search?token=TOKEN&query=QUERY
               </code>
               <p className="text-sm text-slate-600">
-                Searches for items that match the specified query.
+                Ищет элементы, соответствующие указанному запросу.
               </p>
             </div>
             
             <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Custom Endpoints</h3>
+              <h3 className="font-semibold mb-2">Пользовательские конечные точки</h3>
               <p className="text-sm text-slate-600">
-                Any other endpoint available in the original API can be accessed by replacing the domain with our gateway URL.
+                Любая другая конечная точка, доступная в оригинальном API, может быть доступна путем замены домена на URL нашего шлюза.
               </p>
             </div>
           </div>
@@ -143,31 +143,31 @@ const Documentation = () => {
         
         {/* Error Handling */}
         <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Error Handling</h2>
+          <h2 className="text-xl font-bold mb-4">Обработка ошибок</h2>
           <p className="mb-4">
-            The API Mirror Gateway will return the same error responses as the original API. Common HTTP status codes include:
+            API Зеркало вернет те же ответы с ошибками, что и оригинальный API. Распространенные коды состояния HTTP включают:
           </p>
           
           <div className="space-y-2">
             <div className="flex">
               <span className="w-16 font-mono font-medium">200</span>
-              <span>Successful request</span>
+              <span>Успешный запрос</span>
             </div>
             <div className="flex">
               <span className="w-16 font-mono font-medium">400</span>
-              <span>Bad request - check your parameters</span>
+              <span>Некорректный запрос - проверьте ваши параметры</span>
             </div>
             <div className="flex">
               <span className="w-16 font-mono font-medium">401</span>
-              <span>Unauthorized - invalid token</span>
+              <span>Неавторизовано - недействительный токен</span>
             </div>
             <div className="flex">
               <span className="w-16 font-mono font-medium">404</span>
-              <span>Resource not found</span>
+              <span>Ресурс не найден</span>
             </div>
             <div className="flex">
               <span className="w-16 font-mono font-medium">500</span>
-              <span>Server error from the upstream API</span>
+              <span>Ошибка сервера от исходного API</span>
             </div>
           </div>
         </section>

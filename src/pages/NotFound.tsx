@@ -10,7 +10,7 @@ const NotFound = () => {
 
   useEffect(() => {
     console.error(
-      "404 Error: User attempted to access non-existent route:",
+      "404 Ошибка: Пользователь попытался получить доступ к несуществующему маршруту:",
       location.pathname
     );
   }, [location.pathname]);
@@ -23,15 +23,15 @@ const NotFound = () => {
         </div>
         <h1 className="text-5xl font-bold text-slate-900 mb-4">404</h1>
         <p className="text-xl text-slate-600 mb-6">
-          The page you're looking for doesn't exist or has been moved.
+          Страница, которую вы ищете, не существует или была перемещена.
         </p>
         <Button asChild className="mb-6">
           <Link to="/">
-            Return to Home
+            Вернуться на главную
           </Link>
         </Button>
         <p className="text-sm text-slate-500">
-          If you believe this is an error, please check your URL or contact support.
+          Если вы считаете, что это ошибка, пожалуйста, проверьте URL или обратитесь в службу поддержки.
         </p>
       </div>
     </div>
