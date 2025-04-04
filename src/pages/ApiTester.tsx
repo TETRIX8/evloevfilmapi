@@ -14,20 +14,39 @@ const ApiTester = () => {
   const [isJsonResponse, setIsJsonResponse] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // New states for manual request
+  const [httpMethod, setHttpMethod] = useState('GET');
+  const [manualUrl, setManualUrl] = useState('');
+  
   const baseUrl = window.location.origin;
   const fullUrl = `${baseUrl}/api/${endpoint}?token=${token}${searchQuery ? `&${searchQuery}` : ''}`;
   
-  const handleTest = async () => {
+  // This just builds the URL but doesn't send the request
+  const handleTest = () => {
+    setManualUrl(fullUrl);
+    toast({
+      title: "URL сформирован",
+      description: "URL запроса сформирован и готов к отправке.",
+    });
+  };
+  
+  // This handles the actual request - either from the builder or manual URL
+  const handleManualRequest = async () => {
     try {
       setLoading(true);
       setError(null);
       setResponse('');
       
+      if (!manualUrl) {
+        throw new Error('URL запроса не может быть пустым');
+      }
+      
       // Use fetch with proper error handling and timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
-      const res = await fetch(fullUrl, {
+      const res = await fetch(manualUrl, {
+        method: httpMethod,
         signal: controller.signal,
         headers: {
           'Accept': 'application/json, text/plain, */*',
@@ -72,8 +91,8 @@ const ApiTester = () => {
       }
       
       toast({
-        title: "Поиск выполнен",
-        description: "Результаты поиска получены успешно.",
+        title: "Запрос выполнен",
+        description: "Результаты запроса получены успешно.",
       });
     } catch (err: any) {
       console.error("API request error:", err);
@@ -104,7 +123,7 @@ const ApiTester = () => {
 
   return (
     <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">Поиск фильмов и сериалов</h1>
+      <h1 className="text-3xl font-bold mb-6">API Тестер</h1>
       
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Search form */}
@@ -118,6 +137,11 @@ const ApiTester = () => {
           handleTest={handleTest}
           loading={loading}
           fullUrl={fullUrl}
+          httpMethod={httpMethod}
+          setHttpMethod={setHttpMethod}
+          manualUrl={manualUrl}
+          setManualUrl={setManualUrl}
+          handleManualRequest={handleManualRequest}
         />
         
         {/* Response viewer */}
