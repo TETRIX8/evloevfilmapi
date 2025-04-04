@@ -11,10 +11,10 @@ const Index = () => {
       <section className="bg-gradient-to-b from-blue-50 to-white py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="gradient-text">КиноПоиск API</span>
+            <span className="gradient-text">EvloevFilm API</span>
           </h1>
           <p className="text-xl md:text-2xl text-slate-700 mb-8 max-w-3xl mx-auto">
-            Удобный сервис для поиска информации о фильмах и сериалах
+            Удобный сервис для поиска информации о фильмах и сериалах  Creati by A-K project
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" className="rounded-full">
