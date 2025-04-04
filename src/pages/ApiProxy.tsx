@@ -12,9 +12,10 @@ const ApiProxy = () => {
         setIsLoading(true);
         // Get the path after /api/ and the query parameters
         const path = location.pathname.replace(/^\/api\//, '');
+        // Use the base URL without revealing it to end-users
         const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
         
-        console.log(`Proxying request to: ${targetUrl}`);
+        console.log(`Обработка API запроса...`);
         
         // Make request to the target API
         const response = await fetch(targetUrl, {

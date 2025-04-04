@@ -18,7 +18,6 @@ const Documentation = () => {
 
   const baseUrl = window.location.origin;
   const exampleUrl = `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=100&genre=drama`;
-  const baseApiUrl = "https://api.bhcesh.me";
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -29,16 +28,16 @@ const Documentation = () => {
         <section className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-bold mb-4">Введение</h2>
           <p className="mb-4">
-            API Зеркало - это прокси-сервис, который позволяет отправлять запросы к внешним API через наш домен.
-            Это может быть полезно для:
+            API Зеркало - это прокси-сервис, который предоставляет доступ к API фильмов через наш домен.
+            Это позволяет:
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-2">
-            <li>Обхода ограничений CORS в клиентских приложениях</li>
-            <li>Маскировки исходной конечной точки API для дополнительной приватности</li>
-            <li>Настройки стабильной конечной точки API для ваших приложений</li>
+            <li>Использовать API без необходимости работы с внешними сервисами</li>
+            <li>Получить стабильный и надежный доступ к данным</li>
+            <li>Избегать проблем с CORS при использовании в веб-приложениях</li>
           </ul>
           <p>
-            Шлюз перенаправляет все запросы к оригинальному API и возвращает ответы без изменений.
+            Запросы обрабатываются прозрачно для пользователя и возвращают полные данные без изменений.
           </p>
         </section>
         
@@ -60,9 +59,6 @@ const Documentation = () => {
               <Copy className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Это будет проксировать запросы на: <code className="px-1 py-0.5 bg-gray-100 rounded">{baseApiUrl}</code>
-          </p>
         </section>
         
         {/* API Parameters */}
@@ -76,7 +72,6 @@ const Documentation = () => {
             <div className="border rounded p-4">
               <h3 className="font-semibold">Базовые настройки API</h3>
               <div className="code-block mt-2">
-                <code>const BASE_URL = "https://api1673051707.bhcesh.me/list";</code><br/>
                 <code>const API_TOKEN = "3794a7638b5863cc60d7b2b9274fa32e";</code>
               </div>
             </div>
@@ -125,6 +120,11 @@ const Documentation = () => {
                   <td className="p-3 border">Объединение сезонов (для сериалов)</td>
                   <td className="p-3 border font-mono">join_seasons=false</td>
                 </tr>
+                <tr>
+                  <td className="p-3 border font-mono">genre</td>
+                  <td className="p-3 border">Фильтрация по жанру</td>
+                  <td className="p-3 border font-mono">genre=drama</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -152,39 +152,62 @@ const Documentation = () => {
         <section className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-bold mb-4">Как использовать</h2>
           <p className="mb-4">
-            Для использования API Зеркала замените оригинальный домен API на URL нашего шлюза, сохраняя все остальные параметры без изменений.
+            Для использования API Зеркала просто отправьте HTTP-запрос на наш эндпоинт с нужными параметрами запроса.
+            Вся обработка происходит прозрачно для пользователя, вам не нужно беспокоиться о внутренней реализации.
           </p>
           
           <h3 className="text-lg font-semibold mt-6 mb-3">Пример:</h3>
           
-          <Tabs defaultValue="original">
+          <Tabs defaultValue="fetch">
             <TabsList className="mb-4">
-              <TabsTrigger value="original">Оригинальный API</TabsTrigger>
-              <TabsTrigger value="mirror">API Зеркало</TabsTrigger>
+              <TabsTrigger value="fetch">Fetch API</TabsTrigger>
+              <TabsTrigger value="axios">Axios</TabsTrigger>
             </TabsList>
-            <TabsContent value="original">
+            <TabsContent value="fetch">
               <div className="code-block">
-                <code>https://api.bhcesh.me/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=100&genre=drama</code>
+                <pre>
+{`fetch("${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=10")
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));`}
+                </pre>
               </div>
             </TabsContent>
-            <TabsContent value="mirror">
-              <div className="flex flex-col gap-2">
-                <div className="code-block">
-                  <code>{exampleUrl}</code>
-                </div>
-                <div className="flex justify-end">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => copyToClipboard(exampleUrl)}
-                    className="flex items-center gap-1"
-                  >
-                    <Copy className="h-3 w-3" /> Копировать URL
-                  </Button>
-                </div>
+            <TabsContent value="axios">
+              <div className="code-block">
+                <pre>
+{`axios.get("${baseUrl}/api/list", {
+  params: {
+    token: "3794a7638b5863cc60d7b2b9274fa32e",
+    type: "serials",
+    limit: 10
+  }
+})
+.then(response => console.log(response.data))
+.catch(error => console.error('Error:', error));`}
+                </pre>
               </div>
             </TabsContent>
           </Tabs>
+          
+          <div className="mt-4">
+            <div className="flex flex-col gap-2">
+              <div className="bg-gray-100 p-3 rounded-md">
+                <p className="font-semibold">Полный URL примера:</p>
+                <code className="block mt-1 break-all">{exampleUrl}</code>
+              </div>
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => copyToClipboard(exampleUrl)}
+                  className="flex items-center gap-1"
+                >
+                  <Copy className="h-3 w-3" /> Копировать URL
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
         
         {/* Example Requests */}
@@ -258,7 +281,7 @@ const Documentation = () => {
         <section className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-bold mb-4">Обработка ошибок</h2>
           <p className="mb-4">
-            API Зеркало вернет те же ответы с ошибками, что и оригинальный API. Распространенные коды состояния HTTP включают:
+            API может вернуть различные ответы в зависимости от успешности запроса. Распространенные коды состояния HTTP включают:
           </p>
           
           <div className="space-y-2">
@@ -280,7 +303,7 @@ const Documentation = () => {
             </div>
             <div className="flex">
               <span className="w-16 font-mono font-medium">500</span>
-              <span>Ошибка сервера от исходного API</span>
+              <span>Внутренняя ошибка сервера</span>
             </div>
           </div>
         </section>
