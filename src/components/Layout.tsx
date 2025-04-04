@@ -1,43 +1,32 @@
-
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-
 const Layout = () => {
   const location = useLocation();
-  
-  const navItems = [
-    { label: 'Главная', path: '/' },
-    { label: 'Документация', path: '/documentation' },
-    { label: 'Поиск фильмов', path: '/api-tester' },
-  ];
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  const navItems = [{
+    label: 'Главная',
+    path: '/'
+  }, {
+    label: 'Документация',
+    path: '/documentation'
+  }, {
+    label: 'Поиск фильмов',
+    path: '/api-tester'
+  }];
+  return <div className="min-h-screen flex flex-col">
       <header className="border-b bg-white">
         <div className="container mx-auto flex justify-between items-center py-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-gradient-to-r from-api-blue to-api-purple flex items-center justify-center">
               <span className="text-white font-bold">API</span>
             </div>
-            <span className="font-bold text-lg">КиноПоиск API</span>
+            <span className="font-bold text-lg">EvloevFilm API</span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <Link 
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  location.pathname === item.path 
-                    ? "text-primary" 
-                    : "text-muted-foreground"
-                )}
-              >
+            {navItems.map(item => <Link key={item.path} to={item.path} className={cn("text-sm font-medium transition-colors hover:text-primary", location.pathname === item.path ? "text-primary" : "text-muted-foreground")}>
                 {item.label}
-              </Link>
-            ))}
+              </Link>)}
           </nav>
         </div>
       </header>
@@ -51,8 +40,6 @@ const Layout = () => {
           <p>© {new Date().getFullYear()} КиноПоиск API. Все права защищены.</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Layout;
