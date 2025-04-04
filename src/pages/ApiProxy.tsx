@@ -4,12 +4,12 @@ import { useLocation } from 'react-router-dom';
 
 const ApiProxy = () => {
   const location = useLocation();
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const proxyRequest = async () => {
       try {
+        setIsLoading(true);
         // Get the path after /api/ and the query parameters
         const path = location.pathname.replace(/^\/api\//, '');
         const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
@@ -17,64 +17,73 @@ const ApiProxy = () => {
         console.log(`Proxying request to: ${targetUrl}`);
         
         // Make request to the target API
-        const response = await fetch(targetUrl);
+        const response = await fetch(targetUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+          },
+        });
         
         // Get response data
         const contentType = response.headers.get('content-type');
-        
-        // Set appropriate content type for the document
-        if (contentType) {
-          document.querySelector('html')?.setAttribute('content-type', contentType);
-        }
         
         if (!response.ok) {
           throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
         }
         
-        try {
-          // Try parsing as JSON first
-          if (contentType && contentType.includes('application/json')) {
-            const jsonData = await response.json();
-            setData(jsonData);
-            
-            document.open();
-            document.write(JSON.stringify(jsonData, null, 2));
-            document.close();
-          } else {
-            // Handle as text if not JSON
-            const textData = await response.text();
-            setData(textData);
-            
-            document.open();
-            document.write(textData);
-            document.close();
-          }
-        } catch (parseError: any) {
-          console.error('Ошибка при обработке ответа:', parseError);
+        // Create a new document content
+        let content = '';
+        
+        // Handle response based on content type
+        if (contentType && contentType.includes('application/json')) {
+          // Handle JSON response
+          const jsonData = await response.json();
+          content = JSON.stringify(jsonData, null, 2);
           
-          // Fallback to text if JSON parsing fails
-          const textData = await response.text();
-          setData(textData);
-          
-          document.open();
-          document.write(textData);
-          document.close();
+          // Set proper content type
+          document.querySelector('html')?.setAttribute('content-type', 'application/json');
+        } else {
+          // Handle text response
+          content = await response.text();
         }
+        
+        // Clear document and write response
+        document.open();
+        document.write(content);
+        document.close();
       } catch (err: any) {
         console.error('Ошибка проксирования API запроса:', err);
-        setError(err.message || 'Ошибка проксирования API запроса');
+        
+        // Return error in desired format
+        const errorContent = JSON.stringify({ 
+          error: true, 
+          message: err.message || 'Ошибка проксирования API запроса' 
+        }, null, 2);
         
         document.open();
-        document.write(JSON.stringify({ error: err.message || 'Ошибка проксирования API запроса' }));
+        document.write(errorContent);
         document.close();
+      } finally {
+        setIsLoading(false);
       }
     };
 
     proxyRequest();
   }, [location.pathname, location.search]);
 
-  // This component doesn't actually render anything visible
-  // The response is written directly to the document
+  // Display loading if request is in progress
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mb-4 mx-auto"></div>
+          <p className="text-lg">Загрузка данных...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Return null after content is written to document
   return null;
 };
 

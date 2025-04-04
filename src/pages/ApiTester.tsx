@@ -22,8 +22,24 @@ const ApiTester = () => {
       setLoading(true);
       setError(null);
       
-      const res = await fetch(fullUrl);
+      // Use fetch with proper error handling and timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
+      const res = await fetch(fullUrl, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+        }
+      });
+      
+      clearTimeout(timeoutId);
+      
       const contentType = res.headers.get('content-type');
+      
+      if (!res.ok) {
+        throw new Error(`Ошибка API: ${res.status} ${res.statusText}`);
+      }
       
       if (contentType && contentType.includes('application/json')) {
         // Handle JSON response
@@ -42,7 +58,14 @@ const ApiTester = () => {
         description: "Результаты поиска получены успешно.",
       });
     } catch (err: any) {
-      setError(err.message || 'Произошла ошибка при выполнении запроса.');
+      console.error("API request error:", err);
+      
+      if (err.name === 'AbortError') {
+        setError('Запрос превысил время ожидания. Пожалуйста, попробуйте снова.');
+      } else {
+        setError(err.message || 'Произошла ошибка при выполнении запроса.');
+      }
+      
       toast({
         variant: "destructive",
         title: "Ошибка запроса",
