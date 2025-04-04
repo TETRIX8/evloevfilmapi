@@ -21,6 +21,7 @@ const ApiTester = () => {
     try {
       setLoading(true);
       setError(null);
+      setResponse('');
       
       // Use fetch with proper error handling and timeout
       const controller = new AbortController();
@@ -36,21 +37,38 @@ const ApiTester = () => {
       clearTimeout(timeoutId);
       
       const contentType = res.headers.get('content-type');
+      let responseData: string;
       
       if (!res.ok) {
         throw new Error(`Ошибка API: ${res.status} ${res.statusText}`);
       }
       
-      if (contentType && contentType.includes('application/json')) {
-        // Handle JSON response
-        setIsJsonResponse(true);
-        const data = await res.json();
-        setResponse(JSON.stringify(data, null, 2));
+      // First get the text of the response
+      responseData = await res.text();
+      
+      // Then try to parse as JSON if it's indicated as JSON
+      const isJson = contentType && contentType.includes('application/json');
+      
+      // Also check if the response looks like JSON regardless of content-type
+      const looksLikeJson = responseData.trim().startsWith('{') || responseData.trim().startsWith('[');
+      
+      if (isJson || looksLikeJson) {
+        try {
+          // Validate it's actually JSON by parsing it
+          JSON.parse(responseData);
+          setIsJsonResponse(true);
+          
+          // Format the JSON string for readability
+          setResponse(JSON.stringify(JSON.parse(responseData), null, 2));
+        } catch (e) {
+          // If it fails to parse as JSON, treat as text
+          setIsJsonResponse(false);
+          setResponse(responseData);
+        }
       } else {
-        // Handle non-JSON response
+        // Not JSON, treat as text
         setIsJsonResponse(false);
-        const text = await res.text();
-        setResponse(text);
+        setResponse(responseData);
       }
       
       toast({

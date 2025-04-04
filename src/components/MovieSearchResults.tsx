@@ -109,6 +109,14 @@ const MovieSearchResults = ({
     }
   };
 
+  // Функция для определения, является ли строка HTML
+  const isHtmlResponse = (str: string) => {
+    return /<\/?[a-z][\s\S]*>/i.test(str);
+  };
+
+  // Определить, если ответ является HTML вместо JSON
+  const htmlDetected = !isJsonResponse && isHtmlResponse(response);
+
   return (
     <div>
       <div className="bg-white p-6 rounded-lg shadow-sm border mb-4">
@@ -145,6 +153,12 @@ const MovieSearchResults = ({
                   <p>Загрузка результатов...</p>
                 </div>
               </div>
+            ) : htmlDetected ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-yellow-800">
+                <p className="font-semibold">Получен HTML вместо JSON</p>
+                <p className="mb-2">API вернул HTML страницу вместо ожидаемых данных JSON.</p>
+                <p>Проверьте корректность параметров запроса и URL.</p>
+              </div>
             ) : response ? (
               renderMovieCards() || (
                 <div className="bg-slate-50 p-4 rounded-md">
@@ -168,6 +182,11 @@ const MovieSearchResults = ({
             ) : loading ? (
               <div className="h-60 flex items-center justify-center bg-slate-50 rounded-md">
                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+              </div>
+            ) : htmlDetected ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-yellow-800">
+                <p className="font-semibold">Получен HTML вместо JSON</p>
+                <p>API вернул HTML страницу. Проверьте параметры запроса.</p>
               </div>
             ) : response ? (
               isJsonResponse ? (
