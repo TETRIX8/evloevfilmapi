@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import MovieSearchForm from '@/components/MovieSearchForm';
 import MovieSearchResults from '@/components/MovieSearchResults';
+import { motion } from 'framer-motion';
 
 const ApiTester = () => {
   const { toast } = useToast();
@@ -93,6 +94,7 @@ const ApiTester = () => {
       toast({
         title: "Запрос выполнен",
         description: "Результаты запроса получены успешно.",
+        variant: "default",
       });
     } catch (err: any) {
       console.error("API request error:", err);
@@ -123,35 +125,56 @@ const ApiTester = () => {
 
   return (
     <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">API Тестер</h1>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-4xl font-bold mb-6 text-center gradient-text">API Тестер</h1>
+        <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+          Создавайте, тестируйте и исследуйте API запросы с помощью удобного интерфейса
+        </p>
+      </motion.div>
       
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Search form */}
-        <MovieSearchForm 
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          token={token}
-          setToken={setToken}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleTest={handleTest}
-          loading={loading}
-          fullUrl={fullUrl}
-          httpMethod={httpMethod}
-          setHttpMethod={setHttpMethod}
-          manualUrl={manualUrl}
-          setManualUrl={setManualUrl}
-          handleManualRequest={handleManualRequest}
-        />
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <MovieSearchForm 
+            endpoint={endpoint}
+            setEndpoint={setEndpoint}
+            token={token}
+            setToken={setToken}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleTest={handleTest}
+            loading={loading}
+            fullUrl={fullUrl}
+            httpMethod={httpMethod}
+            setHttpMethod={setHttpMethod}
+            manualUrl={manualUrl}
+            setManualUrl={setManualUrl}
+            handleManualRequest={handleManualRequest}
+          />
+        </motion.div>
         
         {/* Response viewer */}
-        <MovieSearchResults
-          loading={loading}
-          error={error}
-          response={response}
-          isJsonResponse={isJsonResponse}
-          copyToClipboard={copyToClipboard}
-        />
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <MovieSearchResults
+            loading={loading}
+            error={error}
+            response={response}
+            isJsonResponse={isJsonResponse}
+            copyToClipboard={copyToClipboard}
+          />
+        </motion.div>
       </div>
     </div>
   );
