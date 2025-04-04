@@ -18,7 +18,7 @@ const Layout = () => {
         <div className="container mx-auto flex justify-between items-center py-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-gradient-to-r from-api-blue to-api-purple flex items-center justify-center">
-              <span className="text-white font-bold">API</span>
+              <span className="text-white font-bold">A-K</span>
             </div>
             <span className="font-bold text-lg">EvloevFilm API</span>
           </Link>
