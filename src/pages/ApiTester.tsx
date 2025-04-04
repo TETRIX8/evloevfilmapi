@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ const ApiTester = () => {
   const [params, setParams] = useState('type=serials&limit=100&genre=drama');
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<string>('');
+  const [isJsonResponse, setIsJsonResponse] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const baseUrl = window.location.origin;
@@ -26,9 +26,19 @@ const ApiTester = () => {
       setError(null);
       
       const res = await fetch(fullUrl);
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
       
-      setResponse(JSON.stringify(data, null, 2));
+      if (contentType && contentType.includes('application/json')) {
+        // Handle JSON response
+        setIsJsonResponse(true);
+        const data = await res.json();
+        setResponse(JSON.stringify(data, null, 2));
+      } else {
+        // Handle non-JSON response
+        setIsJsonResponse(false);
+        const text = await res.text();
+        setResponse(text);
+      }
       
       toast({
         title: "Запрос успешен",
@@ -214,9 +224,16 @@ const ApiTester = () => {
                     </div>
                   </div>
                 ) : response ? (
-                  <pre className="bg-slate-800 text-white p-4 rounded-md overflow-auto h-96">
-                    {response}
-                  </pre>
+                  isJsonResponse ? (
+                    <pre className="bg-slate-800 text-white p-4 rounded-md overflow-auto h-96">
+                      {response}
+                    </pre>
+                  ) : (
+                    <div className="bg-slate-800 text-white p-4 rounded-md overflow-auto h-96">
+                      <p className="mb-2 text-yellow-300">Ответ не в формате JSON:</p>
+                      <div className="font-mono whitespace-pre-wrap">{response}</div>
+                    </div>
+                  )
                 ) : (
                   <div className="h-96 flex items-center justify-center bg-slate-50 rounded-md">
                     <div className="text-center">
@@ -238,7 +255,7 @@ const ApiTester = () => {
                   </div>
                 ) : response ? (
                   <div className="bg-slate-800 font-mono text-white p-4 rounded-md overflow-auto h-96">
-                    <code>{response.replace(/\n\s*/g, '')}</code>
+                    <code>{isJsonResponse ? response.replace(/\n\s*/g, '') : response}</code>
                   </div>
                 ) : (
                   <div className="h-96 flex items-center justify-center bg-slate-50 rounded-md">

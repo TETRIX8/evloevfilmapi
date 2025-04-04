@@ -21,33 +21,51 @@ const ApiProxy = () => {
         
         // Get response data
         const contentType = response.headers.get('content-type');
-        let responseData;
         
-        if (contentType && contentType.includes('application/json')) {
-          responseData = await response.json();
-        } else {
-          responseData = await response.text();
+        // Set appropriate content type for the document
+        if (contentType) {
+          document.querySelector('html')?.setAttribute('content-type', contentType);
         }
         
-        // Set the data in state (although we'll return it directly in the response)
-        setData(responseData);
+        if (!response.ok) {
+          throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
+        }
         
-        // Send the response data directly
-        document.open();
-        
-        if (contentType && contentType.includes('application/json')) {
-          document.write(JSON.stringify(responseData));
-          document.close();
-        } else {
-          document.write(responseData);
+        try {
+          // Try parsing as JSON first
+          if (contentType && contentType.includes('application/json')) {
+            const jsonData = await response.json();
+            setData(jsonData);
+            
+            document.open();
+            document.write(JSON.stringify(jsonData, null, 2));
+            document.close();
+          } else {
+            // Handle as text if not JSON
+            const textData = await response.text();
+            setData(textData);
+            
+            document.open();
+            document.write(textData);
+            document.close();
+          }
+        } catch (parseError: any) {
+          console.error('Ошибка при обработке ответа:', parseError);
+          
+          // Fallback to text if JSON parsing fails
+          const textData = await response.text();
+          setData(textData);
+          
+          document.open();
+          document.write(textData);
           document.close();
         }
       } catch (err: any) {
-        console.error('Error proxying API request:', err);
-        setError(err.message || 'Error proxying API request');
+        console.error('Ошибка проксирования API запроса:', err);
+        setError(err.message || 'Ошибка проксирования API запроса');
         
         document.open();
-        document.write(JSON.stringify({ error: err.message || 'Error proxying API request' }));
+        document.write(JSON.stringify({ error: err.message || 'Ошибка проксирования API запроса' }));
         document.close();
       }
     };
