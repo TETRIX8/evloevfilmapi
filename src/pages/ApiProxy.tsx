@@ -18,7 +18,7 @@ const ApiProxy = () => {
         // Use the base URL without revealing it to end-users
         const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
         
-        console.log(`Обработка API запроса...`);
+        console.log(`Processing API request...`);
         
         // Make request to the target API with timeout
         const controller = new AbortController();
@@ -38,53 +38,63 @@ const ApiProxy = () => {
         const contentType = response.headers.get('content-type');
         
         if (!response.ok) {
-          throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
         }
         
-        // First get the text response
+        // Get the raw text response
         const textResponse = await response.text();
-        
-        // Create a new document content
-        let content = '';
         
         // Check if the response is JSON (either by content-type or by looking at the content)
         const isJson = contentType && contentType.includes('application/json');
         const looksLikeJson = textResponse.trim().startsWith('{') || textResponse.trim().startsWith('[');
         
+        let responseData = textResponse;
         if (isJson || looksLikeJson) {
           try {
-            // Try to parse as JSON
-            const parsedJson = JSON.parse(textResponse);
-            content = JSON.stringify(parsedJson, null, 2);
-            
-            // Set proper content type
-            document.querySelector('html')?.setAttribute('content-type', 'application/json');
+            // Try to parse as JSON to validate it
+            JSON.parse(textResponse);
+            responseData = textResponse;
           } catch (e) {
-            // If parsing fails, return the raw text
-            content = textResponse;
+            responseData = JSON.stringify({ error: true, message: "Invalid JSON response from API" });
           }
         } else {
-          // Handle text response
-          content = textResponse;
+          // Not JSON, convert to JSON format
+          responseData = JSON.stringify({ data: textResponse, type: 'text' });
         }
         
-        // Clear document and write response
+        // Set content type to application/json
+        document.documentElement.innerHTML = '';
         document.open();
-        document.write(content);
+        document.write(responseData);
         document.close();
+        
+        // Set the correct content type header for the response
+        const meta = document.createElement('meta');
+        meta.httpEquiv = 'Content-Type';
+        meta.content = 'application/json';
+        document.head.appendChild(meta);
+        
       } catch (err: any) {
-        console.error('Ошибка проксирования API запроса:', err);
-        setError(err.message || 'Ошибка проксирования API запроса');
+        console.error('API proxy error:', err);
         
-        // Return error in desired format
-        const errorContent = JSON.stringify({ 
+        // Return error in JSON format
+        const errorResponse = JSON.stringify({ 
           error: true, 
-          message: err.message || 'Ошибка проксирования API запроса' 
-        }, null, 2);
+          message: err.message || 'API proxy error' 
+        });
         
+        document.documentElement.innerHTML = '';
         document.open();
-        document.write(errorContent);
+        document.write(errorResponse);
         document.close();
+        
+        // Set error content type
+        const meta = document.createElement('meta');
+        meta.httpEquiv = 'Content-Type';
+        meta.content = 'application/json';
+        document.head.appendChild(meta);
+        
+        setError(err.message || 'API proxy error');
       } finally {
         setIsLoading(false);
       }
@@ -93,31 +103,7 @@ const ApiProxy = () => {
     proxyRequest();
   }, [location.pathname, location.search]);
 
-  // Display loading if request is in progress
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mb-4 mx-auto"></div>
-          <p className="text-lg">Загрузка данных...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Display error if something went wrong
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center max-w-md p-6 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-lg text-red-800 font-semibold mb-2">Ошибка запроса</p>
-          <p className="text-red-700">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Return null after content is written to document
+  // This is just a fallback - the API should return raw JSON without rendering this component
   return null;
 };
 
