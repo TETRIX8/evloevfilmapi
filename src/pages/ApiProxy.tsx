@@ -15,7 +15,7 @@ const ApiProxy = () => {
         // Use the base URL without revealing it to end-users
         const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
         
-        console.log(`Processing API request...`);
+        console.log(`Processing API request to: ${targetUrl}`);
         
         // Make request to the target API with timeout
         const controller = new AbortController();
@@ -40,7 +40,10 @@ const ApiProxy = () => {
             status: response.status,
             message: `API Error: ${response.status} ${response.statusText}`
           };
-          document.write(JSON.stringify(errorResponse));
+
+          // Send only JSON without HTML wrapper
+          const jsonResponse = JSON.stringify(errorResponse);
+          writeJsonResponse(jsonResponse);
           return;
         }
         
@@ -57,14 +60,16 @@ const ApiProxy = () => {
             const parsedJson = JSON.parse(textResponse);
             
             // Return only the JSON data without any HTML
-            document.write(JSON.stringify(parsedJson));
+            const jsonResponse = JSON.stringify(parsedJson);
+            writeJsonResponse(jsonResponse);
           } catch (e) {
             // If parsing fails, return error as JSON
             const errorResponse = {
               error: true,
               message: "Invalid JSON response received"
             };
-            document.write(JSON.stringify(errorResponse));
+            const jsonResponse = JSON.stringify(errorResponse);
+            writeJsonResponse(jsonResponse);
           }
         } else {
           // Handle non-JSON by converting to JSON error response
@@ -73,7 +78,8 @@ const ApiProxy = () => {
             message: "Non-JSON response received",
             data: textResponse.substring(0, 200) + (textResponse.length > 200 ? '...' : '')
           };
-          document.write(JSON.stringify(errorResponse));
+          const jsonResponse = JSON.stringify(errorResponse);
+          writeJsonResponse(jsonResponse);
         }
       } catch (err: any) {
         console.error('API proxy error:', err);
@@ -84,10 +90,40 @@ const ApiProxy = () => {
           message: err.message || 'API proxy error'
         };
         
-        document.write(JSON.stringify(errorResponse));
+        const jsonResponse = JSON.stringify(errorResponse);
+        writeJsonResponse(jsonResponse);
       } finally {
         setIsLoading(false);
       }
+    };
+
+    // Function to write JSON response and set proper headers
+    const writeJsonResponse = (jsonStr: string) => {
+      // Clear any existing content
+      document.open();
+      
+      // Set content type to JSON
+      document.write(`<plaintext>${jsonStr}</plaintext>`);
+      
+      // Create a custom script to properly handle the response as pure JSON
+      const script = document.createElement('script');
+      script.innerHTML = `
+        // Remove all HTML elements
+        document.documentElement.innerHTML = '';
+        
+        // Create proper JSON response
+        document.write(${JSON.stringify(jsonStr)});
+        
+        // Override content type to application/json
+        const meta = document.createElement('meta');
+        meta.httpEquiv = 'Content-Type';
+        meta.content = 'application/json; charset=utf-8';
+        document.head.appendChild(meta);
+      `;
+      
+      // Execute the script and close the document
+      document.body.appendChild(script);
+      document.close();
     };
 
     proxyRequest();
