@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Copy, PlayCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
 type MovieSearchFormProps = {
   endpoint: string;
   setEndpoint: (value: string) => void;
@@ -14,7 +16,14 @@ type MovieSearchFormProps = {
   handleTest: () => void;
   loading: boolean;
   fullUrl: string;
+  // Add the missing properties
+  httpMethod: string;
+  setHttpMethod: (value: string) => void;
+  manualUrl: string;
+  setManualUrl: (value: string) => void;
+  handleManualRequest: () => Promise<void>;
 };
+
 const MovieSearchForm = ({
   endpoint,
   setEndpoint,
@@ -24,11 +33,17 @@ const MovieSearchForm = ({
   setSearchQuery,
   handleTest,
   loading,
-  fullUrl
+  fullUrl,
+  httpMethod,
+  setHttpMethod,
+  manualUrl,
+  setManualUrl,
+  handleManualRequest
 }: MovieSearchFormProps) => {
   const {
     toast
   } = useToast();
+  
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -36,6 +51,7 @@ const MovieSearchForm = ({
       description: "Текст был скопирован в буфер обмена."
     });
   };
+  
   const searchExamples = [{
     title: "Поиск фильмов Крик",
     query: "name=крик"
@@ -46,6 +62,7 @@ const MovieSearchForm = ({
     title: "Поиск драматических сериалов",
     query: "type=serials&genre=drama"
   }];
+  
   return <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-sm border">
         <h2 className="text-xl font-semibold mb-4">Поиск фильмов и сериалов</h2>
@@ -100,6 +117,57 @@ const MovieSearchForm = ({
             </Button>)}
         </div>
       </div>
+
+      {/* Add UI for manual request - This section is new */}
+      <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <h2 className="text-xl font-semibold mb-4">Ручной запрос</h2>
+        
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="httpMethod">HTTP метод</Label>
+            <div className="flex space-x-2 mt-1">
+              {['GET', 'POST', 'PUT', 'DELETE'].map(method => (
+                <Button 
+                  key={method}
+                  type="button"
+                  variant={httpMethod === method ? "default" : "outline"}
+                  onClick={() => setHttpMethod(method)}
+                  className="flex-1"
+                >
+                  {method}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="manualUrl">URL запроса</Label>
+            <div className="flex space-x-2">
+              <Input 
+                id="manualUrl" 
+                value={manualUrl} 
+                onChange={e => setManualUrl(e.target.value)} 
+                placeholder="https://api.example.com/endpoint?param=value" 
+                className="flex-1"
+              />
+              <Button variant="outline" size="icon" onClick={() => setManualUrl(fullUrl)}>
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex justify-end">
+            <Button 
+              onClick={handleManualRequest}
+              disabled={loading || !manualUrl}
+              className="flex items-center gap-2"
+            >
+              {loading ? 'Загрузка...' : 'Выполнить запрос'}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>;
 };
+
 export default MovieSearchForm;
