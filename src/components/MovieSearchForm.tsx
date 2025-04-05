@@ -1,12 +1,9 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Copy, PlayCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
 type MovieSearchFormProps = {
   endpoint: string;
   setEndpoint: (value: string) => void;
@@ -17,14 +14,7 @@ type MovieSearchFormProps = {
   handleTest: () => void;
   loading: boolean;
   fullUrl: string;
-  // Add the missing properties
-  httpMethod: string;
-  setHttpMethod: (value: string) => void;
-  manualUrl: string;
-  setManualUrl: (value: string) => void;
-  handleManualRequest: () => Promise<void>;
 };
-
 const MovieSearchForm = ({
   endpoint,
   setEndpoint,
@@ -34,17 +24,11 @@ const MovieSearchForm = ({
   setSearchQuery,
   handleTest,
   loading,
-  fullUrl,
-  httpMethod,
-  setHttpMethod,
-  manualUrl,
-  setManualUrl,
-  handleManualRequest
+  fullUrl
 }: MovieSearchFormProps) => {
   const {
     toast
   } = useToast();
-  
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -52,7 +36,6 @@ const MovieSearchForm = ({
       description: "Текст был скопирован в буфер обмена."
     });
   };
-  
   const searchExamples = [{
     title: "Поиск фильмов Крик",
     query: "name=крик"
@@ -63,7 +46,6 @@ const MovieSearchForm = ({
     title: "Поиск драматических сериалов",
     query: "type=serials&genre=drama"
   }];
-  
   return <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-sm border">
         <h2 className="text-xl font-semibold mb-4">Поиск фильмов и сериалов</h2>
@@ -109,45 +91,8 @@ const MovieSearchForm = ({
         </div>
       </div>
       
-      {/* Add manual request section */}
       <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <h2 className="text-xl font-semibold mb-4">Ручной URL запрос</h2>
-        <div className="space-y-4">
-          <div className="flex gap-4 items-end">
-            <div className="w-1/4">
-              <Label htmlFor="httpMethod">Метод</Label>
-              <Select value={httpMethod} onValueChange={setHttpMethod}>
-                <SelectTrigger id="httpMethod">
-                  <SelectValue placeholder="Выберите метод" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="GET">GET</SelectItem>
-                  <SelectItem value="POST">POST</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex-1">
-              <Label htmlFor="manualUrl">URL</Label>
-              <Input 
-                id="manualUrl" 
-                value={manualUrl} 
-                onChange={e => setManualUrl(e.target.value)} 
-                placeholder="Введите полный URL запроса"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Button onClick={handleManualRequest} disabled={loading} className="flex items-center gap-2">
-              {loading ? <>Загрузка...</> : <>
-                <PlayCircle className="h-4 w-4" /> Отправить запрос
-              </>}
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <h2 className="text-xl font-semibold mb-4">URL запроса (Временно не работает попробуете ставить в браузер)</h2>
+        <h2 className="text-xl font-semibold mb-4">URL запроса   (Временно не работает попробуете ставить в браузер )</h2>
         <div className="space-y-3">
           {searchExamples.map((example, index) => <Button key={index} variant="outline" className="w-full justify-start" onClick={() => setSearchQuery(example.query)}>
               <PlayCircle className="h-4 w-4 mr-2" /> 
@@ -157,5 +102,4 @@ const MovieSearchForm = ({
       </div>
     </div>;
 };
-
 export default MovieSearchForm;
