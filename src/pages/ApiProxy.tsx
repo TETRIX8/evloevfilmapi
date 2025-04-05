@@ -10,12 +10,15 @@ const ApiProxy = () => {
   useEffect(() => {
     const proxyRequest = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
+        
         // Get the path after /api/ and the query parameters
         const path = location.pathname.replace(/^\/api\//, '');
         // Use the base URL without revealing it to end-users
         const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
         
-        console.log(`Processing API request to: ${targetUrl}`);
+        console.log(`Обработка API запроса...`);
         
         // Make request to the target API with timeout
         const controller = new AbortController();
@@ -35,20 +38,14 @@ const ApiProxy = () => {
         const contentType = response.headers.get('content-type');
         
         if (!response.ok) {
-          const errorResponse = {
-            error: true,
-            status: response.status,
-            message: `API Error: ${response.status} ${response.statusText}`
-          };
-
-          // Send only JSON without HTML wrapper
-          const jsonResponse = JSON.stringify(errorResponse);
-          writeJsonResponse(jsonResponse);
-          return;
+          throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
         }
         
-        // Get the text response
+        // First get the text response
         const textResponse = await response.text();
+        
+        // Create a new document content
+        let content = '';
         
         // Check if the response is JSON (either by content-type or by looking at the content)
         const isJson = contentType && contentType.includes('application/json');
@@ -58,79 +55,69 @@ const ApiProxy = () => {
           try {
             // Try to parse as JSON
             const parsedJson = JSON.parse(textResponse);
+            content = JSON.stringify(parsedJson, null, 2);
             
-            // Return only the JSON data without any HTML
-            const jsonResponse = JSON.stringify(parsedJson);
-            writeJsonResponse(jsonResponse);
+            // Set proper content type
+            document.querySelector('html')?.setAttribute('content-type', 'application/json');
           } catch (e) {
-            // If parsing fails, return error as JSON
-            const errorResponse = {
-              error: true,
-              message: "Invalid JSON response received"
-            };
-            const jsonResponse = JSON.stringify(errorResponse);
-            writeJsonResponse(jsonResponse);
+            // If parsing fails, return the raw text
+            content = textResponse;
           }
         } else {
-          // Handle non-JSON by converting to JSON error response
-          const errorResponse = {
-            error: true,
-            message: "Non-JSON response received",
-            data: textResponse.substring(0, 200) + (textResponse.length > 200 ? '...' : '')
-          };
-          const jsonResponse = JSON.stringify(errorResponse);
-          writeJsonResponse(jsonResponse);
+          // Handle text response
+          content = textResponse;
         }
+        
+        // Clear document and write response
+        document.open();
+        document.write(content);
+        document.close();
       } catch (err: any) {
-        console.error('API proxy error:', err);
+        console.error('Ошибка проксирования API запроса:', err);
+        setError(err.message || 'Ошибка проксирования API запроса');
         
-        // Return error as JSON
-        const errorResponse = {
-          error: true,
-          message: err.message || 'API proxy error'
-        };
+        // Return error in desired format
+        const errorContent = JSON.stringify({ 
+          error: true, 
+          message: err.message || 'Ошибка проксирования API запроса' 
+        }, null, 2);
         
-        const jsonResponse = JSON.stringify(errorResponse);
-        writeJsonResponse(jsonResponse);
+        document.open();
+        document.write(errorContent);
+        document.close();
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Function to write JSON response and set proper headers
-    const writeJsonResponse = (jsonStr: string) => {
-      // Clear any existing content
-      document.open();
-      
-      // Set content type to JSON
-      document.write(`<plaintext>${jsonStr}</plaintext>`);
-      
-      // Create a custom script to properly handle the response as pure JSON
-      const script = document.createElement('script');
-      script.innerHTML = `
-        // Remove all HTML elements
-        document.documentElement.innerHTML = '';
-        
-        // Create proper JSON response
-        document.write(${JSON.stringify(jsonStr)});
-        
-        // Override content type to application/json
-        const meta = document.createElement('meta');
-        meta.httpEquiv = 'Content-Type';
-        meta.content = 'application/json; charset=utf-8';
-        document.head.appendChild(meta);
-      `;
-      
-      // Execute the script and close the document
-      document.body.appendChild(script);
-      document.close();
-    };
-
     proxyRequest();
   }, [location.pathname, location.search]);
 
-  // This component doesn't render anything visible
-  // It only writes the API response directly to the document
+  // Display loading if request is in progress
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mb-4 mx-auto"></div>
+          <p className="text-lg">Загрузка данных...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Display error if something went wrong
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center max-w-md p-6 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-lg text-red-800 font-semibold mb-2">Ошибка запроса</p>
+          <p className="text-red-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Return null after content is written to document
   return null;
 };
 
