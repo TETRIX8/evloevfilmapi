@@ -165,7 +165,7 @@ const ApiProxy = () => {
     
     // Meta tags
     const meta1 = document.createElement('meta');
-    meta1.charset = 'UTF-8';
+    meta1.setAttribute('charset', 'UTF-8');
     const meta2 = document.createElement('meta');
     meta2.name = 'viewport';
     meta2.content = 'width=device-width, initial-scale=1.0';
@@ -378,7 +378,7 @@ const ApiProxy = () => {
     
     // Meta tags
     const meta1 = document.createElement('meta');
-    meta1.charset = 'UTF-8';
+    meta1.setAttribute('charset', 'UTF-8');
     const meta2 = document.createElement('meta');
     meta2.name = 'viewport';
     meta2.content = 'width=device-width, initial-scale=1.0';
@@ -475,7 +475,7 @@ const ApiProxy = () => {
     
     // Meta tags
     const meta1 = document.createElement('meta');
-    meta1.charset = 'UTF-8';
+    meta1.setAttribute('charset', 'UTF-8');
     const meta2 = document.createElement('meta');
     meta2.name = 'viewport';
     meta2.content = 'width=device-width, initial-scale=1.0';
@@ -544,14 +544,14 @@ const ApiProxy = () => {
     
     // Page content
     const h1 = document.createElement('h1');
-    h1.textContent = 'Оплата VPN';
+    h1.textContent = 'Оплата доступа к API';
     body.appendChild(h1);
     
     const paymentForm = document.createElement('div');
     paymentForm.className = 'payment-form';
     
     const p = document.createElement('p');
-    p.innerHTML = 'Сумма к оплате: <strong>2 руб.</strong>';
+    p.innerHTML = 'Для доступа к API необходимо оплатить: <strong>2 руб.</strong>';
     paymentForm.appendChild(p);
     
     const button = document.createElement('button');
