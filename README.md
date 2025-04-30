@@ -14,7 +14,7 @@ EVLOEVFILM API Mirror is a premium proxy service for movie data with enhanced pe
 ## 🔗 Base URL
 
 ```
-https://evloevfilmapi.lovable.app/api
+https://evloevfilmapi.lovable.app
 ```
 
 ## 🔑 Authentication
