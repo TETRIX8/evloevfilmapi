@@ -1,73 +1,122 @@
-# Welcome to your Lovable project
+# 📚 EVLOEVFILM API Documentation
 
-## Project info
+![API Banner](https://via.placeholder.com/1200x300/1a1a2e/ffffff?text=EVLOEVFILM+API+Documentation)
 
-**URL**: https://lovable.dev/projects/9efc7d54-7924-41c5-9b0d-e8d845d98f8b
+## 🌐 Introduction
 
-## How can I edit this code?
+EVLOEVFILM API Mirror is a proxy service that provides seamless access to movie data through our domain. This solution offers:
 
-There are several ways of editing your application.
+- 🔒 Secure API access without direct interaction with external services
+- ⚡ Stable and reliable data delivery
+- 🛡️ Built-in CORS support for web applications
 
-**Use Lovable**
+All requests are processed transparently and return complete, unaltered data.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9efc7d54-7924-41c5-9b0d-e8d845d98f8b) and start prompting.
+## 🔗 Base URL
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+https://evloevfilmapi.vercel.app/api
 ```
 
-**Edit a file directly in GitHub**
+## 🔑 Authentication
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```javascript
+const API_TOKEN = "3794a7638b5863cc60d7b2b9274fa32e";
+```
 
-**Use GitHub Codespaces**
+Include this token in all requests as a required parameter.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📊 API Parameters
 
-## What technologies are used for this project?
+| Parameter      | Description                          | Example Values               |
+|----------------|--------------------------------------|-----------------------------|
+| `token`        | API key (required)                   | `token=3794a7638b5863cc...` |
+| `sort`         | Result sorting                       | `sort=-views` (most viewed) |
+| `type`         | Content type filter                  | `films`, `serials`, `cartoon` |
+| `limit`        | Result limit (default: 50)           | `limit=10`                  |
+| `year`         | Release year filter                  | `year=2024`                 |
+| `name`         | Title search                         | `name=крик`                 |
+| `join_seasons` | Merge seasons (for series)           | `join_seasons=false`        |
+| `genre`        | Genre filter                         | `genre=drama`               |
 
-This project is built with:
+## 🎬 Response Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```json
+{
+  "id": number,
+  "name": string,
+  "poster": string,
+  "iframe_url": string,
+  "description": string,
+  "year": number,
+  "rating": number,
+  "genres": string[],
+  "kinopoisk_id": string,
+  "trailer": string
+}
+```
 
-## How can I deploy this project?
+## 💻 Usage Examples
 
-Simply open [Lovable](https://lovable.dev/projects/9efc7d54-7924-41c5-9b0d-e8d845d98f8b) and click on Share -> Publish.
+### Fetch API Example
+```javascript
+fetch("https://evloevfilmapi.vercel.app/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=10")
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
 
-## Can I connect a custom domain to my Lovable project?
+### Axios Example
+```javascript
+axios.get("https://evloevfilmapi.vercel.app/api/list", {
+  params: {
+    token: "3794a7638b5863cc60d7b2b9274fa32e",
+    type: "films",
+    year: 2024
+  }
+})
+.then(response => console.log(response.data))
+.catch(error => console.error('Error:', error));
+```
 
-Yes it is!
+## 🔍 Sample Requests
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. **New films from specific year**
+   ```
+   https://evloevfilmapi.vercel.app/api/list?token=API_TOKEN&type=films&year=2024
+   ```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+2. **Popular films (sorted by views)**
+   ```
+   https://evloevfilmapi.vercel.app/api/list?token=API_TOKEN&type=films&sort=-views&limit=10
+   ```
+
+3. **Search by title**
+   ```
+   https://evloevfilmapi.vercel.app/api/list?token=API_TOKEN&name=крик
+   ```
+
+4. **Series by genre**
+   ```
+   https://evloevfilmapi.vercel.app/api/list?token=API_TOKEN&type=serials&genre=drama
+   ```
+
+## ⚠️ Error Handling
+
+| Status Code | Description                          |
+|-------------|--------------------------------------|
+| 200         | Success                              |
+| 400         | Bad Request - check your parameters  |
+| 401         | Unauthorized - invalid token         |
+| 404         | Resource not found                   |
+| 500         | Internal server error                |
+
+## 📜 License
+
+This API is provided under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+> 🎥 Powered by EVLOEVFILM - Your gateway to cinematic world  
+> 📅 Last Updated: October 2023  
+> 🔗 [Main Website](https://evolvefilm.com) | [GitHub Repo](https://github.com/TETRIX8/evloevfilmapi.git)
