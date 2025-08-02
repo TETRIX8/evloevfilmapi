@@ -15,12 +15,12 @@ const ApiProxy = () => {
       
       // Get the path after /api/ and the query parameters
       const path = location.pathname.replace(/^\/api\//, '');
-      // Use local server instead of direct API calls
+      // Use the same origin for API calls (works with Vercel)
       const targetUrl = `${window.location.origin}/api/${path}${location.search}`;
       
       console.log(`Processing API request to: ${targetUrl}`);
       
-      // Make request to the local server with timeout
+      // Make request to the API with timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
       

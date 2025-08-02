@@ -11,7 +11,7 @@ EVLOEVFILM API Mirror is a premium proxy service for movie data with enhanced pe
 
 ## 🚀 Quick Start
 
-### Installation
+### Local Development
 
 ```bash
 # Install dependencies
@@ -24,17 +24,16 @@ npm run dev:server
 npm run start
 ```
 
-### Development
+### Vercel Deployment (Recommended)
 
 ```bash
-# Start only client (for development)
-npm run dev
+# Install Vercel CLI
+npm i -g vercel
 
-# Start only server
-npm run server
+# Deploy to Vercel
+vercel
 
-# Start both client and server
-npm run dev:server
+# Follow the prompts and deploy!
 ```
 
 ## 🔗 Base URL
@@ -108,12 +107,17 @@ All existing endpoints remain identical - only the domain has changed for improv
 
 ```
 evloevfilmapi/
+├── api/                    # Vercel API routes
+│   ├── index.js           # Main API handler
+│   └── [...path].js       # Catch-all route
 ├── src/                    # React client source
 │   ├── components/         # React components
 │   ├── pages/             # Page components
 │   ├── hooks/             # Custom React hooks
 │   └── lib/               # Utility functions
+├── dist/                   # Built React app
 ├── server.js              # Express server
+├── vercel.json            # Vercel configuration
 ├── package.json           # Dependencies and scripts
 └── README.md             # This file
 ```
@@ -128,6 +132,43 @@ evloevfilmapi/
 - Target API: `https://api.bhcesh.me`
 - Timeout: 30 seconds
 - CORS: Enabled for all origins
+
+## 🚀 Deployment Options
+
+### Vercel (Recommended)
+- **Automatic scaling**
+- **Global CDN**
+- **Serverless functions**
+- **Free tier available**
+
+```bash
+npm i -g vercel
+vercel
+```
+
+### Local/Server
+- **Full control**
+- **Custom domain**
+- **Unlimited resources**
+
+```bash
+npm run start
+```
+
+### PM2 (Production)
+- **Process management**
+- **Auto-restart**
+- **Logging**
+
+```bash
+npm run pm2:start
+```
+
+## 📚 Documentation
+
+- **[Vercel Deployment](VERCEL_DEPLOYMENT.md)** - Detailed Vercel guide
+- **[Local Deployment](DEPLOYMENT.md)** - Server deployment guide
+- **[Quick Deploy](DEPLOY_TO_VERCEL.md)** - Fast Vercel deployment
 
 ---
 

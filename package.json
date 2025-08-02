@@ -17,7 +17,8 @@
     "pm2:restart": "pm2 restart evloevfilm-api-proxy",
     "pm2:delete": "pm2 delete evloevfilm-api-proxy",
     "pm2:logs": "pm2 logs evloevfilm-api-proxy",
-    "pm2:monit": "pm2 monit"
+    "pm2:monit": "pm2 monit",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

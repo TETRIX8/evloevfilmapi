@@ -8,11 +8,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // API Proxy endpoint
@@ -26,7 +27,6 @@ app.all('/api/*', async (req, res) => {
     
     console.log(`Proxying request to: ${targetUrl}`);
     console.log(`Method: ${req.method}`);
-    console.log(`Headers:`, req.headers);
     
     // Prepare request options
     const requestOptions = {
@@ -94,8 +94,15 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 EvloevFilm API Proxy server running on port ${PORT}`);
-  console.log(`📡 API endpoint: http://localhost:${PORT}/api/*`);
-  console.log(`🏥 Health check: http://localhost:${PORT}/health`);
-}); 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`🚀 EvloevFilm API Proxy server running on port ${PORT}`);
+    console.log(`📡 API endpoint: http://localhost:${PORT}/api/*`);
+    console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+  });
+}
+
+// Export for Vercel
+export default app; 
