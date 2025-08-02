@@ -6,90 +6,8 @@ const ApiProxy = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isPaid, setIsPaid] = useState(false);
-  const [paymentId, setPaymentId] = useState('');
-  const [checkInterval, setCheckInterval] = useState<number | null>(null);
 
-  // Handle payment button click
-  const handlePaymentClick = () => {
-    // Generate unique payment ID
-    const newPaymentId = 'vpn-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setPaymentId(newPaymentId);
-    
-    // Open YooMoney payment page
-    const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118336080745&quickpay-form=shop&targets=VPN&paymentType=AC&sum=2&label=${newPaymentId}`;
-    window.open(paymentUrl, '_blank');
-    
-    // Start checking payment status
-    const intervalId = window.setInterval(() => {
-      checkPaymentStatus(newPaymentId);
-    }, 10000); // Check every 10 seconds
-    
-    setCheckInterval(intervalId);
-    
-    // Set timeout to stop checking after 15 minutes
-    setTimeout(() => {
-      if (checkInterval) {
-        clearInterval(checkInterval);
-        setCheckInterval(null);
-        
-        // If still not paid after timeout
-        if (!isPaid) {
-          const statusElement = document.getElementById('payment-status');
-          if (statusElement) {
-            statusElement.className = 'error';
-            statusElement.textContent = 'Время ожидания платежа истекло.';
-            statusElement.style.display = 'block';
-          }
-        }
-      }
-    }, 900000); // 15 minutes
-  };
-
-  // Check payment status (mock implementation)
-  const checkPaymentStatus = (id: string) => {
-    // This is a mock implementation
-    // In a real scenario, you would make an API call to your backend
-    // which would check the payment status with YooMoney API
-    
-    // For demo purposes, we'll randomly succeed after a few checks
-    const mockResponses = ['pending', 'pending', 'success'];
-    const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
-    
-    const statusElement = document.getElementById('payment-status');
-    if (statusElement) {
-      statusElement.style.display = 'block';
-      
-      if (randomResponse === 'success') {
-        if (checkInterval) {
-          clearInterval(checkInterval);
-          setCheckInterval(null);
-        }
-        
-        statusElement.className = 'success';
-        statusElement.textContent = 'Оплата прошла успешно! Перенаправление на сайт...';
-        
-        // Set payment as complete and load the content
-        setIsPaid(true);
-        setTimeout(() => {
-          loadApiContent();
-        }, 2000); // Wait 2 seconds before loading content
-      } else if (randomResponse === 'rejected') {
-        if (checkInterval) {
-          clearInterval(checkInterval);
-          setCheckInterval(null);
-        }
-        
-        statusElement.className = 'error';
-        statusElement.textContent = 'Оплата не прошла. Пожалуйста, попробуйте еще раз.';
-      } else {
-        statusElement.className = 'pending';
-        statusElement.textContent = 'Ожидание оплаты...';
-      }
-    }
-  };
-
-  // Load the actual API content after payment
+  // Load the actual API content immediately
   const loadApiContent = async () => {
     try {
       setIsLoading(true);
@@ -97,12 +15,12 @@ const ApiProxy = () => {
       
       // Get the path after /api/ and the query parameters
       const path = location.pathname.replace(/^\/api\//, '');
-      // Use the base URL without revealing it to end-users
-      const targetUrl = `https://api.bhcesh.me/${path}${location.search}`;
+      // Use local server instead of direct API calls
+      const targetUrl = `${window.location.origin}/api/${path}${location.search}`;
       
-      console.log(`Processing API request...`);
+      console.log(`Processing API request to: ${targetUrl}`);
       
-      // Make request to the target API with timeout
+      // Make request to the local server with timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
       
@@ -110,6 +28,7 @@ const ApiProxy = () => {
         method: 'GET',
         headers: {
           'Accept': 'application/json, text/plain, */*',
+          'User-Agent': 'EvloevFilm-API-Proxy/1.0',
         },
         signal: controller.signal
       });
@@ -253,6 +172,11 @@ const ApiProxy = () => {
         cursor: not-allowed;
       }
       .no-results {
+        text-align: center;
+        margin-top: 50px;
+        color: #666;
+      }
+      .loading {
         text-align: center;
         margin-top: 50px;
         color: #666;
@@ -461,125 +385,10 @@ const ApiProxy = () => {
     document.replaceChild(html, document.documentElement);
   };
 
-  // When component mounts, show payment page instead of immediately loading API content
+  // When component mounts, immediately load API content
   useEffect(() => {
-    // Create payment page
-    document.documentElement.innerHTML = '';
-    
-    // Create a new HTML structure
-    const html = document.createElement('html');
-    html.lang = 'ru';
-    
-    // Create head
-    const head = document.createElement('head');
-    
-    // Meta tags
-    const meta1 = document.createElement('meta');
-    meta1.setAttribute('charset', 'UTF-8');
-    const meta2 = document.createElement('meta');
-    meta2.name = 'viewport';
-    meta2.content = 'width=device-width, initial-scale=1.0';
-    
-    // Title
-    const title = document.createElement('title');
-    title.textContent = 'Оплата VPN';
-    
-    // CSS styles
-    const style = document.createElement('style');
-    style.textContent = `
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        text-align: center;
-      }
-      .payment-form {
-        margin: 30px 0;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-      }
-      button {
-        background-color: #FFDB4D;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 4px;
-      }
-      button:hover {
-        background-color: #f0cc3d;
-      }
-      #payment-status {
-        margin: 20px 0;
-        padding: 15px;
-        border-radius: 4px;
-        display: none;
-      }
-      .success {
-        background-color: #d4edda;
-        color: #155724;
-      }
-      .pending {
-        background-color: #fff3cd;
-        color: #856404;
-      }
-      .error {
-        background-color: #f8d7da;
-        color: #721c24;
-      }
-    `;
-    
-    // Append elements to head
-    head.appendChild(meta1);
-    head.appendChild(meta2);
-    head.appendChild(title);
-    head.appendChild(style);
-    html.appendChild(head);
-    
-    // Create body
-    const body = document.createElement('body');
-    
-    // Page content
-    const h1 = document.createElement('h1');
-    h1.textContent = 'Оплата доступа к API';
-    body.appendChild(h1);
-    
-    const paymentForm = document.createElement('div');
-    paymentForm.className = 'payment-form';
-    
-    const p = document.createElement('p');
-    p.innerHTML = 'Для доступа к API необходимо оплатить: <strong>2 руб.</strong>';
-    paymentForm.appendChild(p);
-    
-    const button = document.createElement('button');
-    button.id = 'payment-button';
-    button.textContent = 'Перейти к оплате';
-    paymentForm.appendChild(button);
-    
-    body.appendChild(paymentForm);
-    
-    const statusDiv = document.createElement('div');
-    statusDiv.id = 'payment-status';
-    body.appendChild(statusDiv);
-    
-    html.appendChild(body);
-    
-    // Replace document
-    document.replaceChild(html, document.documentElement);
-    
-    // Add event listener to payment button
-    document.getElementById('payment-button')?.addEventListener('click', handlePaymentClick);
-    
-    // Cleanup on unmount
-    return () => {
-      if (checkInterval) {
-        clearInterval(checkInterval);
-      }
-    };
-  }, []);
+    loadApiContent();
+  }, [location.pathname, location.search]);
 
   // This component doesn't render anything in the React way
   // It directly manipulates the DOM
