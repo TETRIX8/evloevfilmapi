@@ -1,12 +1,16 @@
 
-import React from 'react';
-import { Copy } from 'lucide-react';
+import React, { useState } from 'react';
+import { Copy, BookOpen, Code, Zap, Shield, Globe, Database, Search, Film, Clapperboard, Star, Calendar, Users, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import { motion } from 'framer-motion';
 
 const Documentation = () => {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('overview');
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -19,164 +23,40 @@ const Documentation = () => {
   const baseUrl = window.location.origin;
   const exampleUrl = `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=100&genre=drama`;
 
-  return (
-    <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">Документация API Зеркала</h1>
-      
-      <div className="space-y-12">
-        {/* Introduction */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Введение</h2>
-          <p className="mb-4">
-            API Зеркало - это прокси-сервис, который предоставляет доступ к API фильмов через наш домен.
-            Это позволяет:
-          </p>
-          <ul className="list-disc pl-6 mb-4 space-y-2">
-            <li>Использовать API без необходимости работы с внешними сервисами</li>
-            <li>Получить стабильный и надежный доступ к данным</li>
-            <li>Избегать проблем с CORS при использовании в веб-приложениях</li>
-          </ul>
-          <p>
-            Запросы обрабатываются прозрачно для пользователя и возвращают полные данные без изменений.
-          </p>
-        </section>
-        
-        {/* Base URL */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Базовый URL</h2>
-          <p className="mb-4">
-            Все запросы API должны быть отправлены на следующий базовый URL:
-          </p>
-          <div className="flex items-center gap-2 mb-4">
-            <code className="api-endpoint flex-1">
-              {baseUrl}/api
-            </code>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => copyToClipboard(`${baseUrl}/api`)}
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-          </div>
-        </section>
-        
-        {/* API Parameters */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Параметры API</h2>
-          <p className="mb-4">
-            API для получения фильмов поддерживает следующие параметры запроса:
-          </p>
-          
-          <div className="space-y-4">
-            <div className="border rounded p-4">
-              <h3 className="font-semibold">Базовые настройки API</h3>
-              <div className="code-block mt-2">
-                <code>const API_TOKEN = "3794a7638b5863cc60d7b2b9274fa32e";</code>
-              </div>
-            </div>
-            
-            <table className="min-w-full mt-4 border-collapse">
-              <thead>
-                <tr className="bg-slate-100">
-                  <th className="text-left p-3 border">Параметр</th>
-                  <th className="text-left p-3 border">Описание</th>
-                  <th className="text-left p-3 border">Пример</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="p-3 border font-mono">token</td>
-                  <td className="p-3 border">API-ключ для авторизации запросов (обязательный)</td>
-                  <td className="p-3 border font-mono">token=3794a7638b5863cc60d7b2b9274fa32e</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">sort</td>
-                  <td className="p-3 border">Сортировка результатов</td>
-                  <td className="p-3 border font-mono">sort=-views (по просмотрам)</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">type</td>
-                  <td className="p-3 border">Тип контента</td>
-                  <td className="p-3 border font-mono">type=films, serials, cartoon</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">limit</td>
-                  <td className="p-3 border">Ограничение количества результатов</td>
-                  <td className="p-3 border font-mono">limit=50 (по умолчанию)</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">year</td>
-                  <td className="p-3 border">Фильтрация по году</td>
-                  <td className="p-3 border font-mono">year=2024</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">name</td>
-                  <td className="p-3 border">Поиск по названию</td>
-                  <td className="p-3 border font-mono">name=крик</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">join_seasons</td>
-                  <td className="p-3 border">Объединение сезонов (для сериалов)</td>
-                  <td className="p-3 border font-mono">join_seasons=false</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border font-mono">genre</td>
-                  <td className="p-3 border">Фильтрация по жанру</td>
-                  <td className="p-3 border font-mono">genre=drama</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <h3 className="text-lg font-semibold mt-8 mb-4">Возвращаемые поля для фильмов</h3>
-          <div className="code-block">
-            <pre>
-{`{
-  id: number;
-  name: string;
-  poster: string;
-  iframe_url: string;
-  description?: string;
-  year?: number;
-  rating?: number;
-  genres?: string[];
-  kinopoisk_id?: string;
-  trailer?: string;
-}`}
-            </pre>
-          </div>
-        </section>
-        
-        {/* How to Use */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Как использовать</h2>
-          <p className="mb-4">
-            Для использования API Зеркала просто отправьте HTTP-запрос на наш эндпоинт с нужными параметрами запроса.
-            Вся обработка происходит прозрачно для пользователя, вам не нужно беспокоиться о внутренней реализации.
-          </p>
-          
-          <h3 className="text-lg font-semibold mt-6 mb-3">Пример:</h3>
-          
-          <Tabs defaultValue="fetch">
-            <TabsList className="mb-4">
-              <TabsTrigger value="fetch">Fetch API</TabsTrigger>
-              <TabsTrigger value="axios">Axios</TabsTrigger>
-            </TabsList>
-            <TabsContent value="fetch">
-              <div className="code-block">
-                <pre>
-{`fetch("${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=10")
+  const apiExamples = [
+    {
+      title: "Поиск по названию",
+      description: "Найти фильмы по названию",
+      url: `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&name=крик`,
+      method: "GET"
+    },
+    {
+      title: "Фильмы по жанру",
+      description: "Список боевиков",
+      url: `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&genre=action&limit=10`,
+      method: "GET"
+    },
+    {
+      title: "Сериалы 2024 года",
+      description: "Сериалы за 2024 год",
+      url: `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&year=2024&limit=20`,
+      method: "GET"
+    },
+    {
+      title: "Популярные фильмы",
+      description: "Топ фильмов по просмотрам",
+      url: `${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&sort=-views&limit=15`,
+      method: "GET"
+    }
+  ];
+
+  const codeExamples = {
+    fetch: `fetch("${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=10")
   .then(response => response.json())
   .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));`}
-                </pre>
-              </div>
-            </TabsContent>
-            <TabsContent value="axios">
-              <div className="code-block">
-                <pre>
-{`axios.get("${baseUrl}/api/list", {
+  .catch(error => console.error('Error:', error));`,
+    
+    axios: `axios.get("${baseUrl}/api/list", {
   params: {
     token: "3794a7638b5863cc60d7b2b9274fa32e",
     type: "serials",
@@ -184,129 +64,447 @@ const Documentation = () => {
   }
 })
 .then(response => console.log(response.data))
-.catch(error => console.error('Error:', error));`}
-                </pre>
-              </div>
-            </TabsContent>
-          </Tabs>
-          
-          <div className="mt-4">
-            <div className="flex flex-col gap-2">
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="font-semibold">Полный URL примера:</p>
-                <code className="block mt-1 break-all">{exampleUrl}</code>
-              </div>
-              <div className="flex justify-end">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => copyToClipboard(exampleUrl)}
-                  className="flex items-center gap-1"
-                >
-                  <Copy className="h-3 w-3" /> Копировать URL
-                </Button>
-              </div>
-            </div>
+.catch(error => console.error('Error:', error));`,
+    
+    curl: `curl "${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&limit=10"`,
+    
+    javascript: `const API_TOKEN = "3794a7638b5863cc60d7b2b9274fa32e";
+const BASE_URL = "${baseUrl}/api";
+
+async function searchMovies(query) {
+  const response = await fetch(\`\${BASE_URL}/list?token=\${API_TOKEN}&name=\${query}\`);
+  return await response.json();
+}`,
+    
+    python: `import requests
+
+API_TOKEN = "3794a7638b5863cc60d7b2b9274fa32e"
+BASE_URL = "${baseUrl}/api"
+
+def search_movies(query):
+    response = requests.get(f"{BASE_URL}/list", params={
+        "token": API_TOKEN,
+        "name": query
+    })
+    return response.json()`
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="container mx-auto py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center mb-4">
+            <BookOpen className="h-8 w-8 text-blue-600 mr-3" />
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Документация API
+            </h1>
           </div>
-        </section>
-        
-        {/* Example Requests */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Примеры запросов</h2>
-          
-          <div className="space-y-4">
-            <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Получение новых фильмов за определенный год</h3>
-              <code className="api-endpoint block mb-2">
-                {baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&year=2024
-              </code>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => copyToClipboard(`${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&year=2024`)}
-                className="flex items-center gap-1"
-              >
-                <Copy className="h-3 w-3" /> Копировать
-              </Button>
-            </div>
-            
-            <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Получение популярных фильмов с ограничением</h3>
-              <code className="api-endpoint block mb-2">
-                {baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&sort=-views&limit=10
-              </code>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => copyToClipboard(`${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=films&sort=-views&limit=10`)}
-                className="flex items-center gap-1"
-              >
-                <Copy className="h-3 w-3" /> Копировать
-              </Button>
-            </div>
-            
-            <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Поиск фильма по названию</h3>
-              <code className="api-endpoint block mb-2">
-                {baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&name=крик
-              </code>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => copyToClipboard(`${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&name=крик`)}
-                className="flex items-center gap-1"
-              >
-                <Copy className="h-3 w-3" /> Копировать
-              </Button>
-            </div>
-            
-            <div className="p-4 border rounded-md">
-              <h3 className="font-semibold mb-2">Получение сериалов определенного жанра</h3>
-              <code className="api-endpoint block mb-2">
-                {baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&genre=drama
-              </code>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => copyToClipboard(`${baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&type=serials&genre=drama`)}
-                className="flex items-center gap-1"
-              >
-                <Copy className="h-3 w-3" /> Копировать
-              </Button>
-            </div>
-          </div>
-        </section>
-        
-        {/* Error Handling */}
-        <section className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-bold mb-4">Обработка ошибок</h2>
-          <p className="mb-4">
-            API может вернуть различные ответы в зависимости от успешности запроса. Распространенные коды состояния HTTP включают:
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            Полное руководство по использованию EvloevFilm API
           </p>
-          
-          <div className="space-y-2">
-            <div className="flex">
-              <span className="w-16 font-mono font-medium">200</span>
-              <span>Успешный запрос</span>
+        </motion.div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-6xl mx-auto">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Обзор</TabsTrigger>
+            <TabsTrigger value="endpoints">Эндпоинты</TabsTrigger>
+            <TabsTrigger value="examples">Примеры</TabsTrigger>
+            <TabsTrigger value="reference">Справочник</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Zap className="mr-2 h-5 w-5" />
+                      Быстрый старт
+                    </CardTitle>
+                    <CardDescription>
+                      Начните использовать API за несколько минут
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Базовый URL</label>
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 bg-slate-100 p-2 rounded text-sm">
+                          {baseUrl}/api
+                        </code>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(`${baseUrl}/api`)}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">API Токен</label>
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 bg-slate-100 p-2 rounded text-sm">
+                          3794a7638b5863cc60d7b2b9274fa32e
+                        </code>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard('3794a7638b5863cc60d7b2b9274fa32e')}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Простой пример</label>
+                      <div className="bg-slate-900 text-green-400 p-3 rounded text-sm">
+                        <div>GET {baseUrl}/api/list?token=3794a7638b5863cc60d7b2b9274fa32e&name=крик</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Shield className="mr-2 h-5 w-5" />
+                      Возможности API
+                    </CardTitle>
+                    <CardDescription>
+                      Что вы можете делать с нашим API
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <Search className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <div className="font-medium">Быстрый поиск</div>
+                          <div className="text-sm text-slate-500">По названию, жанру, году</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <Database className="h-5 w-5 text-green-600" />
+                        <div>
+                          <div className="font-medium">Богатая база данных</div>
+                          <div className="text-sm text-slate-500">50K+ фильмов и сериалов</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <Globe className="h-5 w-5 text-purple-600" />
+                        <div>
+                          <div className="font-medium">Глобальный доступ</div>
+                          <div className="text-sm text-slate-500">Низкая задержка по всему миру</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <Users className="h-5 w-5 text-orange-600" />
+                        <div>
+                          <div className="font-medium">Простая интеграция</div>
+                          <div className="text-sm text-slate-500">RESTful API с JSON</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
-            <div className="flex">
-              <span className="w-16 font-mono font-medium">400</span>
-              <span>Некорректный запрос - проверьте ваши параметры</span>
+          </TabsContent>
+
+          <TabsContent value="endpoints" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Code className="mr-2 h-5 w-5" />
+                  Эндпоинты API
+                </CardTitle>
+                <CardDescription>
+                  Доступные эндпоинты и их параметры
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">GET /api/list</h3>
+                    <p className="text-slate-600 mb-4">Основной эндпоинт для поиска фильмов и сериалов</p>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-medium mb-2">Обязательные параметры</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <code className="text-sm">token</code>
+                            <Badge variant="destructive">Обязательный</Badge>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium mb-2">Опциональные параметры</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <code>name</code>
+                            <span>Поиск по названию</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <code>type</code>
+                            <span>films, serials, cartoon</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <code>genre</code>
+                            <span>Фильтр по жанру</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <code>year</code>
+                            <span>Фильтр по году</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <code>limit</code>
+                            <span>Количество результатов</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <code>sort</code>
+                            <span>Сортировка результатов</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="examples" className="space-y-6">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Film className="mr-2 h-5 w-5" />
+                    Примеры запросов
+                  </CardTitle>
+                  <CardDescription>
+                    Готовые примеры для различных сценариев использования
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {apiExamples.map((example, index) => (
+                      <div key={index} className="border rounded-lg p-4 hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium">{example.title}</h4>
+                          <Badge variant="outline">{example.method}</Badge>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-3">{example.description}</p>
+                        <div className="bg-slate-900 text-green-400 p-3 rounded text-sm font-mono break-all">
+                          {example.url}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(example.url)}
+                          className="mt-2"
+                        >
+                          <Copy className="mr-2 h-3 w-3" />
+                          Копировать
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Code className="mr-2 h-5 w-5" />
+                    Примеры кода
+                  </CardTitle>
+                  <CardDescription>
+                    Интеграция с различными языками программирования
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="fetch">
+                    <TabsList>
+                      <TabsTrigger value="fetch">JavaScript (Fetch)</TabsTrigger>
+                      <TabsTrigger value="axios">JavaScript (Axios)</TabsTrigger>
+                      <TabsTrigger value="curl">cURL</TabsTrigger>
+                      <TabsTrigger value="javascript">JavaScript (Class)</TabsTrigger>
+                      <TabsTrigger value="python">Python</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="fetch" className="mt-4">
+                      <div className="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                        <pre>{codeExamples.fetch}</pre>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="axios" className="mt-4">
+                      <div className="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                        <pre>{codeExamples.axios}</pre>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="curl" className="mt-4">
+                      <div className="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                        <pre>{codeExamples.curl}</pre>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="javascript" className="mt-4">
+                      <div className="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                        <pre>{codeExamples.javascript}</pre>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="python" className="mt-4">
+                      <div className="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                        <pre>{codeExamples.python}</pre>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
             </div>
-            <div className="flex">
-              <span className="w-16 font-mono font-medium">401</span>
-              <span>Неавторизовано - недействительный токен</span>
+          </TabsContent>
+
+          <TabsContent value="reference" className="space-y-6">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Справочник параметров
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-3 font-medium">Параметр</th>
+                          <th className="text-left p-3 font-medium">Тип</th>
+                          <th className="text-left p-3 font-medium">Описание</th>
+                          <th className="text-left p-3 font-medium">Пример</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">token</td>
+                          <td className="p-3">string</td>
+                          <td className="p-3">API ключ для авторизации</td>
+                          <td className="p-3 font-mono">3794a7638b5863cc60d7b2b9274fa32e</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">name</td>
+                          <td className="p-3">string</td>
+                          <td className="p-3">Поиск по названию</td>
+                          <td className="p-3 font-mono">крик</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">type</td>
+                          <td className="p-3">string</td>
+                          <td className="p-3">Тип контента</td>
+                          <td className="p-3 font-mono">films, serials, cartoon</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">genre</td>
+                          <td className="p-3">string</td>
+                          <td className="p-3">Фильтр по жанру</td>
+                          <td className="p-3 font-mono">action, drama, comedy</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">year</td>
+                          <td className="p-3">number</td>
+                          <td className="p-3">Фильтр по году</td>
+                          <td className="p-3 font-mono">2024</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="p-3 font-mono">limit</td>
+                          <td className="p-3">number</td>
+                          <td className="p-3">Количество результатов</td>
+                          <td className="p-3 font-mono">10</td>
+                        </tr>
+                        <tr>
+                          <td className="p-3 font-mono">sort</td>
+                          <td className="p-3">string</td>
+                          <td className="p-3">Сортировка результатов</td>
+                          <td className="p-3 font-mono">-views, -rating</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <AlertCircle className="mr-2 h-5 w-5" />
+                    Коды ответов
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3">
+                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span className="font-mono font-medium">200</span>
+                      </div>
+                      <span>Успешный запрос</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                        <span className="font-mono font-medium">400</span>
+                      </div>
+                      <span>Некорректный запрос</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                        <span className="font-mono font-medium">401</span>
+                      </div>
+                      <span>Неавторизовано</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                        <span className="font-mono font-medium">500</span>
+                      </div>
+                      <span>Внутренняя ошибка сервера</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            <div className="flex">
-              <span className="w-16 font-mono font-medium">404</span>
-              <span>Ресурс не найден</span>
-            </div>
-            <div className="flex">
-              <span className="w-16 font-mono font-medium">500</span>
-              <span>Внутренняя ошибка сервера</span>
-            </div>
-          </div>
-        </section>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
